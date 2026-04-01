@@ -33,6 +33,11 @@ const SearchInput = styled.input`
   &:focus {
     border-bottom-color: #000;
   }
+
+  &:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 2px;
+  }
 `;
 
 const ClearButton = styled.button`
@@ -50,6 +55,11 @@ const ClearButton = styled.button`
   
   &:hover {
     opacity: 0.7;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 2px;
   }
 `;
 
@@ -72,6 +82,11 @@ const FilterButton = styled.button`
   font-size: 0.875rem;
   cursor: pointer;
   border-radius: 4px;
+
+  &:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 2px;
+  }
 `;
 
 
@@ -99,23 +114,24 @@ export default function SearchBar({ onSearch, placeholder = "Search for a smartp
   };
 
   return (
-    <SearchContainer>
+    <SearchContainer role="search" aria-label="Product search">
       <InputWrapper>
         <SearchInput
-          type="text"
+          type="search"
           placeholder={placeholder}
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
+          aria-label="Search for a smartphone"
         />
         {searchValue && (
-          <ClearButton onClick={handleClear}>
+          <ClearButton onClick={handleClear} aria-label="Clear search">
             <ClearIcon />
           </ClearButton>
         )}
       </InputWrapper>
       <ResultWrapper>
-        <ResultText>{result} RESULTS</ResultText>
-        <FilterButton onClick={() => searchChange()}>FILTRAR</FilterButton>
+        <ResultText aria-live="polite" aria-atomic="true">{result} RESULTS</ResultText>
+        <FilterButton onClick={() => searchChange()} aria-label="Apply search filter">FILTRAR</FilterButton>
       </ResultWrapper>
     </SearchContainer>
   );

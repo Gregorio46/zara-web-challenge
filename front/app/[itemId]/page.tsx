@@ -22,6 +22,11 @@ const BackButton = styled.button`
   &:hover {
     color: #000;
   }
+
+  &:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 2px;
+  }
 `;
 
 const PageWrapper = styled.div`
@@ -101,6 +106,11 @@ const StorageButton = styled.button<{ $active: boolean }>`
   &:hover {
     border-color: #000;
   }
+
+  &:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 2px;
+  }
 `;
 
 const ColorList = styled.div`
@@ -147,6 +157,11 @@ const AddButton = styled.button`
 
   &:hover {
     background: #333;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 2px;
   }
 `;
 
@@ -299,8 +314,8 @@ export default function ItemPage() {
     router.push('/checkout');
   };
 
-  if (loading) return <Message>Loading...</Message>;
-  if (error) return <Message>{error}</Message>;
+  if (loading) return <Message role="status" aria-live="polite">Loading...</Message>;
+  if (error) return <Message role="alert">{error}</Message>;
   if (!product) return <Message>Product not found</Message>;
 
   const specs = product.specs;
@@ -321,12 +336,12 @@ export default function ItemPage() {
 
   return (
     <PageWrapper>
-      <BackButton onClick={() => router.push('/')}>
+      <BackButton onClick={() => router.push('/')} aria-label="Back to product list">
         &lt; BACK
       </BackButton>
       <HeroSection>
         <ImageContainer>
-          <ProductImage src={currentImage} alt={product.name} />
+          <ProductImage src={currentImage} alt={`${product.brand} ${product.name}`} />
         </ImageContainer>
 
         <DetailsContainer>
@@ -338,28 +353,35 @@ export default function ItemPage() {
           </div>
 
           {product.storageOptions && product.storageOptions.length > 0 && (
-            <div>
-              <SectionLabel>
-                STORAGE HOW MUCH SPACE DO YOU NEED?
-              </SectionLabel>
-              <StorageList>
+            <fieldset style={{ border: 'none', margin: 0, padding: 0 }}>
+              <legend>
+                <SectionLabel>
+                  STORAGE HOW MUCH SPACE DO YOU NEED?
+                </SectionLabel>
+              </legend>
+              <StorageList role="radiogroup" aria-label="Storage options">
                 {product.storageOptions.map((opt: StorageOption, i: number) => (
                   <StorageButton
                     key={i}
                     $active={selectedStorage === i}
                     onClick={() => setSelectedStorage(i)}
+                    role="radio"
+                    aria-checked={selectedStorage === i}
+                    aria-label={`${opt.capacity} storage`}
                   >
                     {opt.capacity}
                   </StorageButton>
                 ))}
               </StorageList>
-            </div>
+            </fieldset>
           )}
 
           {product.colorOptions && product.colorOptions.length > 0 && (
-            <div>
-              <SectionLabel>COLOR. PICK YOUR FAVOURITE.</SectionLabel>
-              <ColorList>
+            <fieldset style={{ border: 'none', margin: 0, padding: 0 }}>
+              <legend>
+                <SectionLabel>COLOR. PICK YOUR FAVOURITE.</SectionLabel>
+              </legend>
+              <ColorList role="radiogroup" aria-label="Color options">
                 {product.colorOptions.map((color: ColorOption, i: number) => (
                   <ColorSwatch
                     key={i}
@@ -367,21 +389,24 @@ export default function ItemPage() {
                     $active={selectedColor === i}
                     onClick={() => setSelectedColor(i)}
                     title={color.name}
+                    role="radio"
+                    aria-checked={selectedColor === i}
+                    aria-label={`Color: ${color.name}`}
                   />
                 ))}
               </ColorList>
-              <ColorName>{product.colorOptions[selectedColor]?.name}</ColorName>
-            </div>
+              <ColorName aria-live="polite">{product.colorOptions[selectedColor]?.name}</ColorName>
+            </fieldset>
           )}
 
-          <AddButton onClick={handleAdd}>AÑADIR</AddButton>
+          <AddButton onClick={handleAdd} aria-label={`Add ${product.name} to cart`}>AÑADIR</AddButton>
         </DetailsContainer>
       </HeroSection>
 
       {specRows.length > 0 && (
-        <SpecsSection>
+        <SpecsSection aria-label="Product specifications">
           <SpecsTitle>SPECIFICATIONS</SpecsTitle>
-          <SpecsTable>
+          <SpecsTable aria-label="Product specifications">
             <tbody>
               {specRows.map((row, i) => (
                 <SpecRow key={i}>
@@ -395,14 +420,16 @@ export default function ItemPage() {
       )}
 
       {product.similarProducts && product.similarProducts.length > 0 && (
-        <SimilarSection>
+        <SimilarSection aria-label="Similar products">
           <SimilarTitle>SIMILAR ITEMS</SimilarTitle>
-          <SimilarGrid ref={scrollContainerRef}>
+          <SimilarGrid ref={scrollContainerRef} role="list" aria-label="Similar products" tabIndex={0}>
             {product.similarProducts.map((item: Product) => (
-              <ProductCard key={item.id} product={item} />
+              <div role="listitem" key={item.id}>
+                <ProductCard product={item} />
+              </div>
             ))}
           </SimilarGrid>
-          <ScrollProgressBar>
+          <ScrollProgressBar role="progressbar" aria-valuenow={Math.round(scrollProgress)} aria-valuemin={0} aria-valuemax={100} aria-label="Scroll progress">
             <ScrollProgress $progress={scrollProgress} />
           </ScrollProgressBar>
         </SimilarSection>

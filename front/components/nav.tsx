@@ -40,18 +40,18 @@ interface NavProps {
 export default function Nav({ items }: NavProps) {
 
   return (
-    <NavContainer>
-      <Link href="/">
-        <img src={logo.src} alt="Logo" />
+    <NavContainer aria-label="Main navigation">
+      <Link href="/" aria-label="ZARA home">
+        <img src={logo.src} alt="ZARA" />
       </Link>
       <IconsContainer>
-        <CartLink href="/checkout">
+        <CartLink href="/checkout" aria-label={`Shopping cart${items > 0 ? `, ${items} item${items !== 1 ? 's' : ''}` : ', empty'}`}>
           {items > 0 ? (
             <ShoppingBagIcon />
           ) : (
             <BagIcon />
           )}
-          {items > 0 && <CartCount>{items}</CartCount>}
+          {items > 0 && <CartCount aria-hidden="true">{items}</CartCount>}
         </CartLink>
       </IconsContainer>
     </NavContainer>

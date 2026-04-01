@@ -82,6 +82,11 @@ const RemoveButton = styled.button`
   &:hover {
     text-decoration: underline;
   }
+
+  &:focus-visible {
+    outline: 2px solid #e74c3c;
+    outline-offset: 2px;
+  }
 `;
 
 const BottomBar = styled.div`
@@ -101,6 +106,11 @@ const ContinueButton = styled.button`
   text-transform: uppercase;
   letter-spacing: 1px;
   cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 2px;
+  }
 `;
 
 const RightSection = styled.div`
@@ -123,6 +133,12 @@ const PayButton = styled.button`
   text-transform: uppercase;
   letter-spacing: 2px;
   cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px #000;
+  }
 `;
 
 const EmptyMessage = styled.p`
@@ -138,20 +154,20 @@ export default function CheckoutPage() {
 
   return (
     <PageWrapper>
-      <Title>CART ({itemCount})</Title>
+      <Title aria-live="polite">CART ({itemCount})</Title>
 
-      <CartList>
-        {itemCount === 0 && <EmptyMessage>Your cart is empty</EmptyMessage>}
+      <CartList role="list" aria-label="Cart items">
+        {itemCount === 0 && <EmptyMessage role="status">Your cart is empty</EmptyMessage>}
         {cart.map((item, index) => (
-          <CartItemRow key={`${item.id}-${index}`}>
-            <ItemImage src={item.imageUrl} alt={item.name} />
+          <CartItemRow key={`${item.id}-${index}`} role="listitem">
+            <ItemImage src={item.imageUrl} alt={`${item.name}${item.color ? `, ${item.color}` : ''}${item.storage ? `, ${item.storage}` : ''}`} />
             <ItemDetails>
               <ItemName>{item.name}</ItemName>
               <ItemSpecs>
                 {[item.storage, item.color].filter(Boolean).join(' | ')}
               </ItemSpecs>
               <ItemPrice>{item.price} EUR</ItemPrice>
-              <RemoveButton onClick={() => removeItem(index)}>
+              <RemoveButton onClick={() => removeItem(index)} aria-label={`Remove ${item.name} from cart`}>
                 Eliminar
               </RemoveButton>
             </ItemDetails>
@@ -159,11 +175,11 @@ export default function CheckoutPage() {
         ))}
       </CartList>
 
-      <BottomBar>
-        <ContinueButton onClick={() => router.push('/')}>CONTINUE SHOPPING</ContinueButton>
+      <BottomBar role="contentinfo" aria-label="Cart summary">
+        <ContinueButton onClick={() => router.push('/')} aria-label="Continue shopping">CONTINUE SHOPPING</ContinueButton>
         <RightSection>
-          <TotalText>TOTAL&nbsp;&nbsp;&nbsp;&nbsp;{total} EUR</TotalText>
-          <PayButton>PAY</PayButton>
+          <TotalText aria-live="polite" role="status">TOTAL&nbsp;&nbsp;&nbsp;&nbsp;{total} EUR</TotalText>
+          <PayButton aria-label={`Pay ${total} EUR`}>PAY</PayButton>
         </RightSection>
       </BottomBar>
     </PageWrapper>

@@ -55,6 +55,11 @@ const Card = styled.a`
     }
   }
 
+  &:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 2px;
+  }
+
   @media (max-width: 767px) {
     max-width: 100%;
     aspect-ratio: auto;
@@ -119,8 +124,8 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   return (
-    <Card href={`/${product.id}`}>
-      <CardImage src={product.imageUrl} alt={product.name} />
+    <Card href={`/${product.id}`} aria-label={`${product.brand} ${product.name}, ${product.basePrice} EUR`}>
+      <CardImage src={product.imageUrl} alt={`${product.brand} ${product.name}`} />
       <CardContent>
         <CardInfo>
           <CardBrand>{product.brand}</CardBrand>
